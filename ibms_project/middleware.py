@@ -122,3 +122,33 @@ class CurrentRequestUserMiddleware(object):
 
     def process_exception(self, request, exception):
         set_current_request(None)
+
+
+class SecurityHeadersMiddleware(object):
+    """Middleware to add security headers to all HTTP responses."""
+
+    def __init__(self, get_response):
+        self.get_response = get_response
+        from django.conf import settings
+        self.csp_header = getattr(settings, 'SECURE_CONTENT_SECURITY_POLICY', None)
+        self.hsts_seconds = getattr(settings, 'SECURE_HSTS_SECONDS', 0)
+        self.hsts_include_subdomains = getattr(settings, 'SECURE_HSTS_INCLUDE_SUBDOMAINS', False)
+        self.hsts_preload = getattr(settings, 'SECURE_HSTS_PRELOAD', False)
+
+    def __call__(self, request):
+        response = self.get_response(request)
+        
+        # Add Content-Security-Policy header
+        if self.csp_header:
+            response['Content-Security-Policy'] = self.csp_header
+        
+        # Add Strict-Transport-Security header
+        if self.hsts_seconds > 0:
+            hsts_value = f'max-age={self.hsts_seconds}'
+            if self.hsts_include_subdomains:
+                hsts_value += '; includeSubDomains'
+            if self.hsts_preload:
+                hsts_value += '; preload'
+            response['Strict-Transport-Security'] = hsts_value
+        
+        return response

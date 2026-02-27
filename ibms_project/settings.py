@@ -20,7 +20,11 @@ CSRF_COOKIE_SECURE = env("CSRF_COOKIE_SECURE", False)
 SESSION_COOKIE_SECURE = env("SESSION_COOKIE_SECURE", False)
 SECURE_SSL_REDIRECT = env("SECURE_SSL_REDIRECT", False)
 SECURE_REFERRER_POLICY = env("SECURE_REFERRER_POLICY", None)
-SECURE_HSTS_SECONDS = env("SECURE_HSTS_SECONDS", 0)
+SECURE_HSTS_SECONDS = env("SECURE_HSTS_SECONDS", 31536000)
+SECURE_HSTS_INCLUDE_SUBDOMAINS = env("SECURE_HSTS_INCLUDE_SUBDOMAINS", True)
+SECURE_HSTS_PRELOAD = env("SECURE_HSTS_PRELOAD", True)
+X_FRAME_OPTIONS = env("X_FRAME_OPTIONS", "DENY")
+SECURE_CONTENT_SECURITY_POLICY = env("SECURE_CONTENT_SECURITY_POLICY", "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' cdn.jsdelivr.net; style-src 'self' 'unsafe-inline' cdn.jsdelivr.net; img-src 'self' data: https:; font-src 'self' data: cdn.jsdelivr.net;")
 if not DEBUG:
     ALLOWED_HOSTS = env("ALLOWED_HOSTS", "localhost").split(",")
 else:
@@ -66,6 +70,7 @@ MIDDLEWARE = [
     "django.contrib.messages.middleware.MessageMiddleware",
     "django.middleware.clickjacking.XFrameOptionsMiddleware",
     "ibms_project.middleware.CurrentRequestUserMiddleware",
+    "ibms_project.middleware.SecurityHeadersMiddleware",
     "dbca_utils.middleware.SSOLoginMiddleware",
 ]
 AUTHENTICATION_BACKENDS = ("django.contrib.auth.backends.ModelBackend",)
