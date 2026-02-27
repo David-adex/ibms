@@ -51,9 +51,31 @@ jobs:
       - name: Install dependencies
         run: uv sync
       #----------------------------------------------
-      # Run unit tests
+      # Run linting
       #----------------------------------------------
-      - name: Run tests
+      - name: Run Ruff linting
+        run: uv run ruff check ibms_project/
+      #----------------------------------------------
+      # Run unit tests with coverage
+      #----------------------------------------------
+      - name: Run tests with coverage
         run: |
-          uv run python manage.py collectstatic
-          uv run python manage.py test --noinput --failfast --verbosity 0
+          uv run python manage.py collectstatic --noinput
+          uv run coverage run --source='ibms_project' manage.py test --noinput --verbosity 2
+      #----------------------------------------------
+      # Generate coverage report
+      #----------------------------------------------
+      - name: Generate coverage report
+        run: |
+          uv run coverage report
+          uv run coverage xml
+      #----------------------------------------------
+      # Upload coverage to Codecov
+      #----------------------------------------------
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4
+        with:
+          files: ./coverage.xml
+          flags: unittests
+          name: codecov-umbrella
+          fail_ci_if_error: false
