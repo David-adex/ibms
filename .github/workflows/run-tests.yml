@@ -55,21 +55,21 @@ jobs:
       # Run linting
       #----------------------------------------------
       - name: Run Ruff linting
-        run: uv run --with ruff check ibms_project/
+        run: uv run --with ruff ruff check ibms_project/
       #----------------------------------------------
       # Run unit tests with coverage
       #----------------------------------------------
       - name: Run tests with coverage
         run: |
           uv run python manage.py collectstatic --noinput
-          uv run coverage run --source='ibms_project' manage.py test --noinput --verbosity 2
+          uv run coverage coverage run --source='ibms_project' manage.py test --noinput --verbosity 2
       #----------------------------------------------
       # Generate coverage report
       #----------------------------------------------
       - name: Generate coverage report
         run: |
-          uv run coverage report
-          uv run coverage xml
+          uv run coverage coverage report
+          uv run coverage coverage xml
       #----------------------------------------------
       # Upload coverage to Codecov
       #----------------------------------------------
