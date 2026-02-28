@@ -55,7 +55,7 @@ jobs:
       # Run linting
       #----------------------------------------------
       - name: Run Ruff linting
-        run: uv run ruff check ibms_project/
+        run: uv run --with ruff check ibms_project/
       #----------------------------------------------
       # Run unit tests with coverage
       #----------------------------------------------
