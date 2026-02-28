@@ -62,14 +62,14 @@ jobs:
       - name: Run tests with coverage
         run: |
           uv run python manage.py collectstatic --noinput
-          uv run coverage coverage run --source='ibms_project' manage.py test --noinput --verbosity 2
+          uv run --with coverage coverage run --source='ibms_project' manage.py test --noinput --verbosity 2
       #----------------------------------------------
       # Generate coverage report
       #----------------------------------------------
       - name: Generate coverage report
         run: |
-          uv run coverage coverage report
-          uv run coverage coverage xml
+          uv run --with coverage coverage report
+          uv run --with coverage coverage xml
       #----------------------------------------------
       # Upload coverage to Codecov
       #----------------------------------------------
